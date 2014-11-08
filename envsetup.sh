@@ -1434,7 +1434,11 @@ function set_java_home() {
                 export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
                 ;;
             *)
-                export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+                if [ -d /usr/lib/jvm/java-7-openjdk-amd64 ]; then
+                    export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+                elif [ -d /usr/lib/jvm/java-7-sun ]; then
+                    export JAVA_HOME=/usr/lib/jvm/java-7-sun
+                fi
                 ;;
         esac
       fi

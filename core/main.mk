@@ -192,6 +192,7 @@ $(info ************************************************************)
 $(error stop)
 endif # java version is not OpenJdk
 else # if requires_openjdk
+ifneq ($(LEGACY_USE_JAVA6),)
 ifneq ($(shell echo '$(java_version_str)' | grep -i openjdk),)
 $(info ************************************************************)
 $(info You are attempting to build with an unsupported JDK.)
@@ -202,6 +203,7 @@ $(info $(space)$(space)$(space)$(space)https://source.android.com/source/downloa
 $(info ************************************************************)
 $(error stop)
 endif # java version is not Sun Oracle JDK
+endif
 endif # if requires_openjdk
 
 # Check for the correct version of javac

@@ -174,7 +174,8 @@ endif
 requires_openjdk := false
 ifeq ($(LEGACY_USE_JAVA6),)
 ifeq ($(HOST_OS), linux)
-requires_openjdk := true
+# Oracle JDK7 works fine on linux.
+requires_openjdk := false
 endif
 endif
 

@@ -313,7 +313,7 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
 
   cmd = [mkbootimg, "--kernel", os.path.join(sourcedir, "kernel")]
 
-  fn = os.path.join(sourcedir, "second")
+  fn = os.path.join(sourcedir, "resource.img")
   if os.access(fn, os.F_OK):
     cmd.append("--second")
     cmd.append(fn)
@@ -844,6 +844,11 @@ class DeviceSpecificParams(object):
     """Called at the end of full OTA installation; typically this is
     used to install the image for the device's baseband processor."""
     return self._DoCall("FullOTA_InstallEnd")
+
+  def Install_Parameter(self):
+    """Called at the start of OTA installation; typically this is
+    used to install the parameter for the device's baseband processor"""
+    return self._DoCall("Install_Parameter")
 
   def IncrementalOTA_Assertions(self):
     """Called after emitting the block of assertions at the top of an

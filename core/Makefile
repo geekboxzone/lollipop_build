@@ -749,13 +749,13 @@ INSTALLED_RECOVERYIMAGE_TARGET := $(PRODUCT_OUT)/recovery.img
 recovery_initrc := $(call include-path-for, recovery)/etc/init.rc
 recovery_initrc_private := $(TARGET_DEVICE_DIR)/recovery/etc/init.rc
 recovery_initrc_private := $(if $(wildcard $(recovery_initrc_private)), $(recovery_initrc_private),\
-    device/rockchip/rksdk/recovery/etc/init.rc)
+    device/rockchip/common/recovery/etc/init.rc)
 recovery_initrc_emmc_private := $(TARGET_DEVICE_DIR)/recovery/etc/init.bootmode.emmc.rc
 recovery_initrc_emmc_private := $(if $(wildcard $(recovery_initrc_emmc_private)), $(recovery_initrc_emmc_private),\
-    device/rockchip/rksdk/recovery/etc/init.bootmode.emmc.rc)
+    device/rockchip/common/recovery/etc/init.bootmode.emmc.rc)
 recovery_initrc_mtd_private := $(TARGET_DEVICE_DIR)/recovery/etc/init.bootmode.unknown.rc
 recovery_initrc_mtd_private := $(if $(wildcard $(recovery_initrc_mtd_private)), $(recovery_initrc_mtd_private),\
-    device/rockchip/rksdk/recovery/etc/init.bootmode.unknown.rc)
+    device/rockchip/common/recovery/etc/init.bootmode.unknown.rc)
 recovery_sepolicy := $(call intermediates-dir-for,ETC,sepolicy.recovery)/sepolicy.recovery
 recovery_kernel := $(INSTALLED_KERNEL_TARGET) # same as a non-recovery system
 recovery_ramdisk := $(PRODUCT_OUT)/ramdisk-recovery.img
@@ -796,7 +796,7 @@ endif
 
 recovery_resources_private := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery/res))
 recovery_resources_private := $(if $(wildcard $(recovery_resources_private)), $(recovery_resources_private),\
-    device/rockchip/rksdk/recovery/res)
+    device/rockchip/common/recovery/res)
 recovery_resource_deps := $(shell find $(recovery_resources_common) \
   $(recovery_resources_private) -type f)
 ifdef TARGET_RECOVERY_FSTAB
@@ -804,19 +804,19 @@ recovery_fstab := $(TARGET_RECOVERY_FSTAB)
 else
 recovery_fstab_mtd := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery.fstab))
 recovery_fstab_mtd := $(if $(wildcard $(recovery_fstab_mtd)), $(recovery_fstab_mtd),\
-    device/rockchip/rksdk/recovery.fstab)
+    device/rockchip/common/recovery.fstab)
 recovery_fstab_emmc := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery.emmc.fstab))
 recovery_fstab_emmc := $(if $(wildcard $(recovery_fstab_emmc)), $(recovery_fstab_emmc),\
-    device/rockchip/rksdk/recovery.emmc.fstab)
+    device/rockchip/common/recovery.emmc.fstab)
 endif
 # Named '.dat' so we don't attempt to use imgdiff for patching it.
 RECOVERY_RESOURCE_ZIP := $(TARGET_OUT)/etc/recovery-resource.dat
 
 ifeq ($(TARGET_ROCKCHIP_PCBATEST),true)
 pcba_core := $(call intermediates-dir-for,EXECUTABLES,pcba_core)/pcba_core
-recovery_contents := $(TOPDIR)device/rockchip/rksdk/recovery_contents.sh
+recovery_contents := $(TOPDIR)device/rockchip/common/recovery_contents.sh
 else
-recovery_contents := $(TOPDIR)device/rockchip/rksdk/recovery_contents.sh
+recovery_contents := $(TOPDIR)device/rockchip/common/recovery_contents.sh
 endif
 
 ifeq ($(recovery_resources_private),)

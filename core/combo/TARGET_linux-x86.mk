@@ -49,6 +49,21 @@ $(combo_2nd_arch_prefix)TARGET_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_T
 $(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX := $($(combo_2nd_arch_prefix)TARGET_TOOLCHAIN_ROOT)/bin/x86_64-linux-android-
 endif
 
+ifeq ($(TARGET_KERNEL_ARCH),x86_64)
+TARGET_KERNEL_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_TAG)/host/x86_64-linux-glibc2.7-4.6
+TARGET_KERNEL_TOOLS_PREFIX := $(TARGET_KERNEL_TOOLCHAIN_ROOT)/bin/x86_64-linux-
+else
+TARGET_KERNEL_TOOLCHAIN_ROOT := $(TARGET_TOOLCHAIN_ROOT)
+TARGET_KERNEL_TOOLS_PREFIX := $(TARGET_TOOLS_PREFIX)
+endif
+
+ifeq ($(TARGET_BUILD_VARIANT),user)
+TARGET_STRIP_COMMAND = $(TARGET_STRIP) --strip-debug $< -o $@
+else
+TARGET_STRIP_COMMAND = $(TARGET_STRIP) --strip-debug $< -o $@ && \
+	$(TARGET_OBJCOPY) --add-gnu-debuglink=$< $@
+endif
+
 $(combo_2nd_arch_prefix)TARGET_CC := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)
 $(combo_2nd_arch_prefix)TARGET_CXX := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)g++$(HOST_EXECUTABLE_SUFFIX)
 $(combo_2nd_arch_prefix)TARGET_AR := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)ar$(HOST_EXECUTABLE_SUFFIX)

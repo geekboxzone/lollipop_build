@@ -4,7 +4,11 @@
 ####################################
 
 DEX2OAT := $(HOST_OUT_EXECUTABLES)/dex2oat$(HOST_EXECUTABLE_SUFFIX)
+ifeq ($(ART_BUILD_HOST_NDEBUG), true)
+DEX2OATD := $(DEX2OAT)
+else
 DEX2OATD := $(HOST_OUT_EXECUTABLES)/dex2oatd$(HOST_EXECUTABLE_SUFFIX)
+endif
 
 # By default, do not run rerun dex2oat if the tool changes.
 # Comment out the | to force dex2oat to rerun on after all changes.
@@ -14,7 +18,9 @@ DEX2OAT_DEPENDENCY += |
 DEX2OAT_DEPENDENCY += $(DEX2OAT)
 
 DEX2OATD_DEPENDENCY := $(DEX2OAT_DEPENDENCY)
+ifneq ($(ART_BUILD_HOST_NDEBUG), true)
 DEX2OATD_DEPENDENCY += $(DEX2OATD)
+endif
 
 PRELOADED_CLASSES := frameworks/base/preloaded-classes
 

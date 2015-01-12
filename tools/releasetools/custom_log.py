@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding=gb2312
+# coding=utf8
 
 import logging
 import inspect
@@ -18,7 +18,7 @@ logging.basicConfig(level=LOGGING_LEVEL,
 
 # .KP : 
 """
-ÅäÖÃÊÇ·ñÊ¹ÄÜ D(), ÒÔ¼°Ó°Ïì I() µÈ·½·¨µÄĞĞÎª.
+é…ç½®æ˜¯å¦ä½¿èƒ½ D(), ä»¥åŠå½±å“ I() ç­‰æ–¹æ³•çš„è¡Œä¸º.
 """
 # ENABLE_DEBUG_LOG = True
 ENABLE_DEBUG_LOG = False
@@ -31,31 +31,31 @@ def __getBackFrameInfo(f):
 
 def __getAllArgsForLogging(fileName, lineNo, funcName, fmt, args):
   """
-  ·µ»ØÔª×éĞÎÌ¬µÄ, ¿É×÷Îª logging.debug() µÈ·½·¨µÄÊµ²ÎÁĞ±í.
+  è¿”å›å…ƒç»„å½¢æ€çš„, å¯ä½œä¸º logging.debug() ç­‰æ–¹æ³•çš„å®å‚åˆ—è¡¨.
   """
   return tuple( ['[file] : %s; [line] : %d : [func] : %s : ' + fmt, fileName, lineNo, funcName] + list(args) )
 
 
 def D(fmt, *args):
   """
-  ´øÓĞÔ´ÂëÎ»ÖÃĞÅÏ¢µÄ debug log.
+  å¸¦æœ‰æºç ä½ç½®ä¿¡æ¯çš„ debug log.
   """
 
   if ( not ENABLE_DEBUG_LOG ):
     return
 
   f = inspect.currentframe()
-  # call_stack ÖĞÉÏÒ»¸ö frame µÄÎÄ¼şĞÅÏ¢. 
+  # call_stack ä¸­ä¸Šä¸€ä¸ª frame çš„æ–‡ä»¶ä¿¡æ¯. 
   filename, lineno, funcName = __getBackFrameInfo(f)
 
-  # ¹¹½¨°üº¬ËùÓĞÊµ²ÎµÄ Ôª×éÊµÀı. 
+  # æ„å»ºåŒ…å«æ‰€æœ‰å®å‚çš„ å…ƒç»„å®ä¾‹. 
   allArgs = __getAllArgsForLogging(filename, lineno, funcName, fmt, args)
   # print(allArgs)
   # print(len(allArgs) )
-  # .KP : Ê¹ÓÃÄÚÖÃº¯Êı apply() µ÷ÓÃº¯Êı, Êµ²ÎÁĞ±íÒÔÔª×éĞÎÊ½´«Èë. 
+  # .KP : ä½¿ç”¨å†…ç½®å‡½æ•° apply() è°ƒç”¨å‡½æ•°, å®å‚åˆ—è¡¨ä»¥å…ƒç»„å½¢å¼ä¼ å…¥. 
   apply(logging.debug, allArgs)
 
-  # ÁíÒ»ÖÖÊµÏÖ·½Ê½ : Ê¹ÓÃ ×Ö´®¸ñÊ½»¯²Ù×÷·û "%" µÄÌØĞÔ, ½«Ôª×é×÷Îª ÓÒ²Ù×÷Êı. 
+  # å¦ä¸€ç§å®ç°æ–¹å¼ : ä½¿ç”¨ å­—ä¸²æ ¼å¼åŒ–æ“ä½œç¬¦ "%" çš„ç‰¹æ€§, å°†å…ƒç»„ä½œä¸º å³æ“ä½œæ•°. 
   # logging.debug('[file] : %s; [line] : %d : %s', filename, lineno, fmt % args)
 
 
@@ -135,7 +135,7 @@ def D_CS(fmt, *args):
   logging.debug('[call stack] : ')
 
   stack=inspect.stack()
-  for i in range(1, len(stack) ):       # "1" : stack[0] ÊÇµ÷ÓÃ stack() ´¦µÄ frame_record, ¶ªÆú.
+  for i in range(1, len(stack) ):       # "1" : stack[0] æ˜¯è°ƒç”¨ stack() å¤„çš„ frame_record, ä¸¢å¼ƒ.
     filename = stack[i][1]
     lineno = stack[i][2]
     funcName = stack[i][3]
@@ -166,14 +166,14 @@ def main():
 
   func1()
 
-  # print("%s", "done.")        # ½«Êä³ö : ('%s', 'done.')
+  # print("%s", "done.")        # å°†è¾“å‡º : ('%s', 'done.')
 
   print( "%s" % "done.")
-  # print "%s" % "done."        # ºÍÉÏÃæµÄĞ´·¨µÈ¼Û. 
+  # print "%s" % "done."        # å’Œä¸Šé¢çš„å†™æ³•ç­‰ä»·. 
   return
 
 #*---------------------------------------------------------------------------*#
-# Èôµ±Ç°Ô´Âë±»×÷Îª½Å±¾Ö´ĞĞ, Ôò...
+# è‹¥å½“å‰æºç è¢«ä½œä¸ºè„šæœ¬æ‰§è¡Œ, åˆ™...
 if __name__ == '__main__':
     main()
 

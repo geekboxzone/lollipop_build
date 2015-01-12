@@ -1,3 +1,4 @@
+# coding=utf8
 # Copyright (C) 2008 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,6 +38,10 @@ try:
 except ImportError:
   from sha import sha as sha1
 
+from custom_log import D
+from custom_log import I
+from custom_log import W
+
 # missing in Python 2.4 and before
 if not hasattr(os, "SEEK_SET"):
   os.SEEK_SET = 0
@@ -58,8 +63,10 @@ OPTIONS.public_key_suffix = ".x509.pem"
 OPTIONS.private_key_suffix = ".pk8"
 OPTIONS.verbose = False
 OPTIONS.tempfiles = []
+# 将存储设备定制操作模块的路径字串. RK32_SDK 中 device/rockchip/rksdk/, 模块是 device/rockchip/rksdk/releasetools.pyc.
 OPTIONS.device_specific = None
 OPTIONS.extras = {}
+# 将引用字典对象, 参见 LoadInfoDict().
 OPTIONS.info_dict = None
 
 
@@ -74,7 +81,8 @@ def Run(args, **kwargs):
   """Create and return a subprocess.Popen object, printing the command
   line on the terminal if -v was specified."""
   if OPTIONS.verbose:
-    print "  running: ", " ".join(args)
+    # print "  running: ", " ".join(args)
+    I("  running: %s", " ".join(args) )
   return subprocess.Popen(args, **kwargs)
 
 
@@ -97,6 +105,7 @@ def CloseInheritedPipes():
 def LoadInfoDict(input):
   """Read and parse the META/misc_info.txt key/value pairs from the
   input target files and return a dict."""
+  # input_zip 中的 META/misc_info.txt 的内容, 在 make otapackage 过程中, 将 "tool_extensions" 这样的 key 和对应的 value (对应 make 变量的 value) 写入得到.
 
   def read_helper(fn):
     if isinstance(input, zipfile.ZipFile):
@@ -170,6 +179,7 @@ def LoadInfoDict(input):
   makeint("boot_size")
   makeint("fstab_version")
 
+  D("to load recovery FS table(fstabi).")
   d["fstab"] = LoadRecoveryFSTab(read_helper, d["fstab_version"])
   d["build.prop"] = LoadBuildProp(read_helper)
   return d
@@ -399,7 +409,7 @@ def UnzipTemp(filename, pattern=None):
   main file), open for reading.
   """
 
-  tmp = tempfile.mkdtemp(prefix="targetfiles-")
+  tmp = tempfile.mkdtemp(prefix="targetfiles-")		# 返回的 tmp 值诸如 '/tmp/targetfiles-mJpYea'
   OPTIONS.tempfiles.append(tmp)
 
   def unzip_to_dir(filename, dirname):
@@ -616,7 +626,7 @@ def ParseOptions(argv,
   extra_option_handler."""
 
   try:
-    opts, args = getopt.getopt(
+    opts, args = getopt.getopt(					# args 中将返回 argv 中非 option 的 program arguments.
         argv, "hvp:s:x:" + extra_opts,
         ["help", "verbose", "path=", "signapk_path=", "extra_signapk_args=",
          "java_path=", "java_args=", "public_key_suffix=",
@@ -817,6 +827,7 @@ class DeviceSpecificParams(object):
           info = imp.find_module(f, [d])
         print "loaded device-specific extensions from", path
         self.module = imp.load_module("device_specific", *info)
+        D("module = %s", self.module);
       except ImportError:
         print "unable to load device-specific module; assuming none"
 

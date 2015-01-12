@@ -656,10 +656,10 @@ $(kernel_notice_file): \
 # before the rules that use that variable to build the image.
 ALL_DEFAULT_INSTALLED_MODULES += $(TARGET_OUT_ETC)/security/otacerts.zip
 $(TARGET_OUT_ETC)/security/otacerts.zip: KEY_CERT_PAIR := $(DEFAULT_KEY_CERT_PAIR)
-$(TARGET_OUT_ETC)/security/otacerts.zip: $(addsuffix .x509.pem,$(DEFAULT_KEY_CERT_PAIR))
+$(TARGET_OUT_ETC)/security/otacerts.zip: $(addsuffix .x509.pem,$(DEFAULT_KEY_CERT_PAIR)) $(RADICAL_UPDATE_CERT)
 	$(hide) rm -f $@
 	$(hide) mkdir -p $(dir $@)
-	$(hide) zip -qj $@ $<
+	$(hide) zip -qj $@ $^
 
 .PHONY: otacerts
 otacerts: $(TARGET_OUT_ETC)/security/otacerts.zip
@@ -861,11 +861,11 @@ RECOVERY_INSTALL_OTA_KEYS := \
 DUMPKEY_JAR := $(HOST_OUT_JAVA_LIBRARIES)/dumpkey.jar
 $(RECOVERY_INSTALL_OTA_KEYS): PRIVATE_OTA_PUBLIC_KEYS := $(OTA_PUBLIC_KEYS)
 $(RECOVERY_INSTALL_OTA_KEYS): extra_keys := $(patsubst %,%.x509.pem,$(PRODUCT_EXTRA_RECOVERY_KEYS))
-$(RECOVERY_INSTALL_OTA_KEYS): $(OTA_PUBLIC_KEYS) $(DUMPKEY_JAR) $(extra_keys) $(RK_PUBLIC_KEY)
+$(RECOVERY_INSTALL_OTA_KEYS): $(OTA_PUBLIC_KEYS) $(DUMPKEY_JAR) $(extra_keys) $(RK_PUBLIC_KEY) $(RADICAL_UPDATE_CERT)
 	@echo "DumpPublicKey: $@ <= $(PRIVATE_OTA_PUBLIC_KEYS) $(extra_keys)"
 	@rm -rf $@
 	@mkdir -p $(dir $@)
-	java -jar $(DUMPKEY_JAR) $(PRIVATE_OTA_PUBLIC_KEYS) $(extra_keys) > $@
+	java -jar $(DUMPKEY_JAR) $(PRIVATE_OTA_PUBLIC_KEYS) $(extra_keys) $(RADICAL_UPDATE_CERT) > $@
 
 $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) \
 		$(INSTALLED_RAMDISK_TARGET) \

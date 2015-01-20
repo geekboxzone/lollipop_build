@@ -16,3 +16,9 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_x86.mk)
 
 PRODUCT_NAME := aosp_x86
+
+##############################################################
+# This is needed to enable silver art optimizer.
+# This will build the plugins/libart-extension.so library,  which is dynamically loaded by
+# AOSP and contains Intel optimizations to the compiler.
+PRODUCT_PACKAGES += libart-extension

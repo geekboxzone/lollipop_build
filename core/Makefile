@@ -802,6 +802,7 @@ recovery_resource_deps := $(shell find $(recovery_resources_common) \
 ifdef TARGET_RECOVERY_FSTAB
 recovery_fstab := $(TARGET_RECOVERY_FSTAB)
 else
+recovery_fstab :=
 recovery_fstab_mtd := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery.fstab))
 recovery_fstab_mtd := $(if $(wildcard $(recovery_fstab_mtd)), $(recovery_fstab_mtd),\
     device/rockchip/common/recovery.fstab)
@@ -874,6 +875,7 @@ $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) \
 		$(recovery_initrc) $(recovery_sepolicy) $(recovery_kernel) \
 		$(INSTALLED_2NDBOOTLOADER_TARGET) \
 		$(recovery_build_prop) $(recovery_resource_deps) \
+		$(recovery_fstab) \
 		$(recovery_fstab_mtd) \
 		$(recovery_fstab_emmc) \
 		$(RECOVERY_INSTALL_OTA_KEYS)
@@ -900,6 +902,8 @@ $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) \
 	$(recovery_contents) $(TARGET_PRODUCT) $(PRODUCT_OUT) $(TARGET_BOARD_PLATFORM) $(TARGET_ROCKCHIP_PCBATEST) $(TARGET_ARCH)
 	$(hide) $(foreach item,$(recovery_resources_private), \
 	  cp -rf $(item) $(TARGET_RECOVERY_ROOT_OUT)/)
+	$(hide) $(foreach item,$(recovery_fstab), \
+	  cp -f $(item) $(TARGET_RECOVERY_ROOT_OUT)/etc/recovery.fstab)
 	$(hide) $(foreach item,$(recovery_fstab_mtd), \
 	  cp -f $(item) $(TARGET_RECOVERY_ROOT_OUT)/etc/recovery.fstab)
 	$(hide) $(foreach item,$(recovery_fstab_emmc), \

@@ -825,7 +825,9 @@ ifeq ($(recovery_resources_private),)
 endif
 
 ifeq ($(recovery_fstab_mtd),)
+ifeq ($(recovery_fstab),)
   $(info No recovery.fstab for TARGET_DEVICE $(TARGET_DEVICE))
+endif
 endif
 
 INTERNAL_RECOVERYIMAGE_ARGS := \

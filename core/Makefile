@@ -801,6 +801,7 @@ recovery_resource_deps := $(shell find $(recovery_resources_common) \
   $(recovery_resources_private) -type f)
 ifdef TARGET_RECOVERY_FSTAB
 recovery_fstab := $(TARGET_RECOVERY_FSTAB)
+recovery_fstab_mtd := $(TARGET_RECOVERY_FSTAB)
 else
 recovery_fstab :=
 recovery_fstab_mtd := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery.fstab))

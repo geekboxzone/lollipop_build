@@ -426,11 +426,11 @@ ifneq ($(strip $(TARGET_NO_BOOTLOADER)),true)
   ifeq ($(strip $(TARGET_BOOTLOADER_IS_2ND)),true)
     INSTALLED_2NDBOOTLOADER_TARGET := $(PRODUCT_OUT)/2ndbootloader
   else
-    INSTALLED_2NDBOOTLOADER_TARGET :=
+    INSTALLED_2NDBOOTLOADER_TARGET ?=
   endif
 else
   INSTALLED_BOOTLOADER_MODULE :=
-  INSTALLED_2NDBOOTLOADER_TARGET :=
+  INSTALLED_2NDBOOTLOADER_TARGET ?=
 endif # TARGET_NO_BOOTLOADER
 ifneq ($(strip $(TARGET_NO_KERNEL)),true)
   INSTALLED_KERNEL_TARGET := $(PRODUCT_OUT)/kernel
@@ -464,9 +464,13 @@ ifneq ($(strip $(TARGET_NO_KERNEL)),true)
 # -----------------------------------------------------------------
 # the boot image, which is a collection of other images.
 INTERNAL_BOOTIMAGE_ARGS := \
-	$(addprefix --second ,$(INSTALLED_2NDBOOTLOADER_TARGET)) \
 	--kernel $(INSTALLED_KERNEL_TARGET) \
 	--ramdisk $(INSTALLED_RAMDISK_TARGET)
+
+ifeq ($(strip $(TARGET_BOOTLOADER_IS_2ND)),true)
+INTERNAL_BOOTIMAGE_ARGS += \
+    $(addprefix --second ,$(INSTALLED_2NDBOOTLOADER_TARGET))
+endif
 
 INTERNAL_BOOTIMAGE_FILES := $(filter-out --%,$(INTERNAL_BOOTIMAGE_ARGS))
 
@@ -832,9 +836,13 @@ endif
 endif
 
 INTERNAL_RECOVERYIMAGE_ARGS := \
-	$(addprefix --second ,$(INSTALLED_2NDBOOTLOADER_TARGET)) \
 	--kernel $(recovery_kernel) \
 	--ramdisk $(recovery_ramdisk)
+
+ifeq ($(strip $(TARGET_BOOTLOADER_IS_2ND)),true)
+INTERNAL_RECOVERYIMAGE_ARGS += \
+    $(addprefix --second ,$(INSTALLED_2NDBOOTLOADER_TARGET))
+endif
 
 # Assumes this has already been stripped
 ifdef BOARD_KERNEL_CMDLINE
@@ -871,12 +879,14 @@ $(RECOVERY_INSTALL_OTA_KEYS): $(OTA_PUBLIC_KEYS) $(DUMPKEY_JAR) $(extra_keys) $(
 	@mkdir -p $(dir $@)
 	java -jar $(DUMPKEY_JAR) $(PRIVATE_OTA_PUBLIC_KEYS) $(extra_keys) $(RADICAL_UPDATE_CERT) > $@
 
+ifeq ($(strip $(TARGET_BOOTLOADER_IS_2ND)),true)
+$(INSTALLED_RECOVERYIMAGE_TARGET): $(INSTALLED_2NDBOOTLOADER_TARGET)
+endif
 $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) \
 		$(INSTALLED_RAMDISK_TARGET) \
 		$(INSTALLED_BOOTIMAGE_TARGET) \
 		$(recovery_binary) \
 		$(recovery_initrc) $(recovery_sepolicy) $(recovery_kernel) \
-		$(INSTALLED_2NDBOOTLOADER_TARGET) \
 		$(recovery_build_prop) $(recovery_resource_deps) \
 		$(recovery_fstab) \
 		$(recovery_fstab_mtd) \

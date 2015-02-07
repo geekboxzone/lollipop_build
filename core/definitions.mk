@@ -1916,19 +1916,20 @@ endef
 # Copy a single file from one place to another,
 # preserving permissions and overwriting any existing
 # file.
+# If files are identical then don't copy.
 # We disable the "-t" option for acp cannot handle
 # high resolution timestamp correctly on file systems like ext4.
 # Therefore copy-file-to-target is the same as copy-file-to-new-target.
 define copy-file-to-target
 @mkdir -p $(dir $@)
-$(hide) $(ACP) -fp $< $@
+$(hide)(cmp -s $< $@ ; if [ $$? -ne 0 ] ; then $(ACP) -fp $< $@ ; fi)
 endef
 
 # The same as copy-file-to-target, but use the local
 # cp command instead of acp.
 define copy-file-to-target-with-cp
 @mkdir -p $(dir $@)
-$(hide) cp -fp $< $@
+$(hide)(cmp -s $< $@ ; if [ $$? -ne 0 ] ; then cp -fp $< $@ ; fi)
 endef
 
 # The same as copy-file-to-target, but use the zipalign tool to do so.

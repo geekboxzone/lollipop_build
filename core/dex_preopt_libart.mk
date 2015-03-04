@@ -26,7 +26,12 @@ PRELOADED_CLASSES := frameworks/base/preloaded-classes
 
 # start of image reserved address space
 LIBART_IMG_HOST_BASE_ADDRESS   := 0x60000000
+
+ifeq ($(strip $(TARGET_BOARD_PLATFORM)),sofia3gr)
+LIBART_IMG_TARGET_BASE_ADDRESS := 0x30000000
+else
 LIBART_IMG_TARGET_BASE_ADDRESS := 0x70000000
+endif
 
 define get-product-default-property
 $(strip $(patsubst $(1)=%,%,$(filter $(1)=%,$(PRODUCT_DEFAULT_PROPERTY_OVERRIDES))))

@@ -1104,20 +1104,33 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
   metadata["pre-build"] = source_fp
   metadata["post-build"] = target_fp
 
+  try:
+    sofia_ota=GetBuildProp("ro.sofia_ota", OPTIONS.info_dict)
+  except common.ExternalError:
+    sofia_ota='false'
+
   source_boot = common.GetBootableImage(
       "/tmp/boot.img", "boot.img", OPTIONS.source_tmp, "BOOT",
       OPTIONS.source_info_dict)
   target_boot = common.GetBootableImage(
       "/tmp/boot.img", "boot.img", OPTIONS.target_tmp, "BOOT")
-  updating_boot = (not OPTIONS.two_step and
+
+  if not sofia_ota == 'true':
+    updating_boot = (not OPTIONS.two_step and
                    (source_boot.data != target_boot.data))
+  else:
+    updating_boot = False
 
   source_recovery = common.GetBootableImage(
       "/tmp/recovery.img", "recovery.img", OPTIONS.source_tmp, "RECOVERY",
       OPTIONS.source_info_dict)
   target_recovery = common.GetBootableImage(
       "/tmp/recovery.img", "recovery.img", OPTIONS.target_tmp, "RECOVERY")
-  updating_recovery = (source_recovery.data != target_recovery.data)
+
+  if not sofia_ota == 'true':
+    updating_recovery = (source_recovery.data != target_recovery.data)
+  else:
+    updating_recovery = False
 
   # Here's how we divide up the progress bar:
   #  0.1 for verifying the start state (PatchCheck calls)

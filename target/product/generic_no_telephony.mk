@@ -25,9 +25,17 @@ PRODUCT_PACKAGES := \
     MusicFX \
     OneTimeInitializer \
     Provision \
-    SystemUI \
     WallpaperCropper
 
+  #$_rbox_$_modify_$_by cx,low memory disable SystemUI    
+  ifeq ($(strip $(BOARD_USE_LOW_MEM)), true)
+  PRODUCT_PACKAGES += \
+      SimpleSystemUI 
+  else
+  PRODUCT_PACKAGES += \
+      SystemUI     
+  endif
+  #$_rbox_$_modify_$_end
 PRODUCT_PACKAGES += \
     clatd \
     clatd.conf \

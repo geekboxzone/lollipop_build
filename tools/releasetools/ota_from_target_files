@@ -558,7 +558,6 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
 
   system_items = ItemSet("system", "META/filesystem_config.txt")
   script.ShowProgress(system_progress, 0)
-
   if block_based:
     # Full OTA is done as an "incremental" against an empty source
     # image.  This has the effect of writing new data from the package
@@ -571,8 +570,8 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   else:
     script.FormatPartition("/system")
     script.Mount("/system", recovery_mount_options)
-    if not has_recovery_patch:
-      script.UnpackPackageDir("recovery", "/system")
+#    if not has_recovery_patch:
+#      script.UnpackPackageDir("recovery", "/system")
     script.UnpackPackageDir("system", "/system")
 
     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
@@ -583,9 +582,8 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   except common.ExternalError:
     sofia_ota='false'
 
-  if not sofia_ota == 'true':
-      boot_img = common.GetBootableImage("boot.img", "boot.img",
-                                         OPTIONS.input_tmp, "BOOT")
+  boot_img = common.GetBootableImage("boot.img", "boot.img",
+                                     OPTIONS.input_tmp, "BOOT")
 
   if not block_based:
     def output_sink(fn, data):
@@ -619,12 +617,11 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
       vendor_items.GetMetadata(input_zip)
       vendor_items.Get("vendor").SetPermissions(script)
 
-  if not sofia_ota == 'true':
-      common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
-      common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
+  common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
+  common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
 
-      script.ShowProgress(0.05, 5)
-      script.WriteRawImage("/boot", "boot.img")
+  script.ShowProgress(0.05, 5)
+  script.WriteRawImage("/boot", "boot.img")
 
   script.ShowProgress(0.2, 10)
   device_specific.FullOTA_InstallEnd()
@@ -1145,6 +1142,12 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
   #      device-specific commands.
 
   AppendAssertions(script, OPTIONS.target_info_dict, oem_dict)
+  
+  if sofia_ota == 'true':
+  	force_boot_image = (not updating_boot and (source_boot.data != target_boot.data))
+  else:
+  	force_boot_image = False
+  
   device_specific.IncrementalOTA_Assertions()
 
   # Two-step incremental package strategy (in chronological order,
@@ -1274,6 +1277,7 @@ else
       print "boot image changed; including."
     else:
       print "boot image unchanged; skipping."
+      
 
   system_items = ItemSet("system", "META/filesystem_config.txt")
   if vendor_diff:
@@ -1366,7 +1370,12 @@ else
   # Now that the symlinks are created, we can set all the
   # permissions.
   script.AppendScript(temp_script)
-
+  
+  if force_boot_image:
+  	print "boot image full update"
+  	common.ZipWriteStr(output_zip, "boot.img", target_boot.data)
+  	script.WriteRawImage("/boot", "boot.img")
+  	
   # Do device-specific installation (eg, write radio image).
   device_specific.IncrementalOTA_InstallEnd()
 

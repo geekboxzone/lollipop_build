@@ -825,8 +825,11 @@ recovery_fstab_emmc := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery.emmc.fst
 recovery_fstab_emmc := $(if $(wildcard $(recovery_fstab_emmc)), $(recovery_fstab_emmc),\
     device/rockchip/common/recovery.emmc.fstab)
 endif
+
+ifneq ($(strip $(TARGET_BOARD_PLATFORM)),sofia3gr)
 # Named '.dat' so we don't attempt to use imgdiff for patching it.
 RECOVERY_RESOURCE_ZIP := $(TARGET_OUT)/etc/recovery-resource.dat
+endif
 
 ifeq ($(TARGET_ROCKCHIP_PCBATEST),true)
 pcba_core := $(call intermediates-dir-for,EXECUTABLES,pcba_core)/pcba_core

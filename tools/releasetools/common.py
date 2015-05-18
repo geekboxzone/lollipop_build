@@ -318,6 +318,11 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
   assert p1.returncode == 0, "mkbootfs of %s ramdisk failed" % (targetname,)
   assert p2.returncode == 0, "minigzip of %s ramdisk failed" % (targetname,)
 
+  cmd = ["truncate", "-s", "%4", ramdisk_img.name]
+  p3 = Run(cmd)
+  p3.communicate()
+  assert p3.returncode == 0, "truncate ramdisk failed"
+
   # use MKBOOTIMG from environ, or "mkbootimg" if empty or not set
   mkbootimg = os.getenv('MKBOOTIMG') or "mkbootimg"
 

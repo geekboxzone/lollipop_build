@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import sys
+import shutil
 
 if sys.hexversion < 0x02070000:
   print >> sys.stderr, "Python 2.7 or newer is required."
@@ -47,7 +48,23 @@ def main(argv):
       f.write(data)
 
   common.MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img)
+   
+def copy_patch_sh(argv): 
+  # description: copy recovery-from-boot.p and install-recovery.sh
+  out_dir_path = argv[1]
+  pre_path_list = out_dir_path.split("obj")
+  pre_path = pre_path_list[0]
 
+  patch_src = os.path.join(out_dir_path,"SYSTEM/recovery-from-boot.p")
+  patch_dst = os.path.join(pre_path,"system/recovery-from-boot.p")
+  
+  sh_src = os.path.join(out_dir_path,"SYSTEM/bin/install-recovery.sh")
+  sh_dst = os.path.join(pre_path,"system/bin/install-recovery.sh")
+
+  shutil.copyfile(patch_src,patch_dst)
+  shutil.copyfile(sh_src,sh_dst)
 
 if __name__ == '__main__':
   main(sys.argv[1:])
+  copy_patch_sh(sys.argv[1:])
+  

@@ -58,7 +58,7 @@ TARGET_KERNEL_TOOLS_PREFIX := $(TARGET_TOOLS_PREFIX)
 endif
 
 ifeq ($(TARGET_BUILD_VARIANT),user)
-TARGET_STRIP_COMMAND = $(TARGET_STRIP) --strip-debug $< -o $@
+TARGET_STRIP_COMMAND = $(TARGET_STRIP) --strip-all $< -o $@
 else
 TARGET_STRIP_COMMAND = $(TARGET_STRIP) --strip-debug $< -o $@ && \
 	$(TARGET_OBJCOPY) --add-gnu-debuglink=$< $@

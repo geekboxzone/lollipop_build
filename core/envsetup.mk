@@ -222,7 +222,12 @@ HOST_OUT_release := $(HOST_OUT_ROOT_release)/$(HOST_OS)-$(HOST_PREBUILT_ARCH)
 HOST_OUT_debug := $(HOST_OUT_ROOT_debug)/$(HOST_OS)-$(HOST_PREBUILT_ARCH)
 HOST_OUT := $(HOST_OUT_$(HOST_BUILD_TYPE))
 ifeq ($(strip $(ANDROID_HOST_OUT)), )
+HOST_OUT_IS_ABS=$(shell if [ -d $(shell pwd)/$(HOST_OUT) ] ; then echo "false" ; else echo "true"; fi )
+ifeq ($(strip $(HOST_OUT_IS_ABS)), false)
 ANDROID_HOST_OUT := $(shell pwd)/$(HOST_OUT)
+else
+ANDROID_HOST_OUT := $(HOST_OUT)
+endif
 endif
 
 BUILD_OUT := $(OUT_DIR)/host/$(BUILD_OS)-$(HOST_PREBUILT_ARCH)

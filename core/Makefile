@@ -815,7 +815,17 @@ recovery_resource_deps := $(shell find $(recovery_resources_common) \
   $(recovery_resources_private) -type f)
 ifdef TARGET_RECOVERY_FSTAB
 recovery_fstab := $(TARGET_RECOVERY_FSTAB)
+#---------------- TARGET_BOARD_PLATFORM
+ifeq ($(TARGET_BOARD_PLATFORM),sofia3gr)
+TARGET_FSTAB_RECOVERY_NAME_EMMC := recovery.fstab_emmc
+TARGET_FSTAB_RECOVERY_NAME_NAND := recovery.fstab_nand
+recovery_fstab_mtd := $(TARGET_RECOVERY_FSTAB_NAND)
+else
+TARGET_FSTAB_RECOVERY_NAME_EMMC := recovery.fstab
+TARGET_FSTAB_RECOVERY_NAME_NAND := recovery.fstab
 recovery_fstab_mtd := $(TARGET_RECOVERY_FSTAB)
+endif
+#---------------- TARGET_BOARD_PLATFORM
 else
 recovery_fstab :=
 recovery_fstab_mtd := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery.fstab))
@@ -929,9 +939,9 @@ $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) \
 	$(hide) $(foreach item,$(recovery_resources_private), \
 	  cp -rf $(item) $(TARGET_RECOVERY_ROOT_OUT)/)
 	$(hide) $(foreach item,$(recovery_fstab), \
-	  cp -f $(item) $(TARGET_RECOVERY_ROOT_OUT)/etc/recovery.fstab)
+	  cp -f $(item) $(TARGET_RECOVERY_ROOT_OUT)/etc/$(TARGET_FSTAB_RECOVERY_NAME_EMMC))
 	$(hide) $(foreach item,$(recovery_fstab_mtd), \
-	  cp -f $(item) $(TARGET_RECOVERY_ROOT_OUT)/etc/recovery.fstab)
+	  cp -f $(item) $(TARGET_RECOVERY_ROOT_OUT)/etc/$(TARGET_FSTAB_RECOVERY_NAME_NAND))
 	$(hide) $(foreach item,$(recovery_fstab_emmc), \
 	  cp -f $(item) $(TARGET_RECOVERY_ROOT_OUT)/etc/recovery.emmc.fstab)
 	$(hide) cp $(RECOVERY_INSTALL_OTA_KEYS) $(TARGET_RECOVERY_ROOT_OUT)/res/keys

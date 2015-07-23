@@ -210,7 +210,8 @@ def LoadRecoveryFSTab(read_helper, fstab_version):
     data = read_helper("RECOVERY/RAMDISK/etc/recovery.fstab")
   except KeyError:
     print "Warning: could not find RECOVERY/RAMDISK/etc/recovery.fstab"
-    data = ""
+    print "Warning: try RECOVERY/RAMDISK/etc/recovery.fstab_emmc"
+    data = read_helper("RECOVERY/RAMDISK/etc/recovery.fstab_emmc")
 
   if fstab_version == 1:
     d = {}

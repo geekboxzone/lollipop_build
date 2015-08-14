@@ -77,7 +77,7 @@ def main(argv):
     sys.exit(1)
 
   OPTIONS.input_tmp, input_zip = common.UnzipTemp(args[0])
-  output_zip = zipfile.ZipFile(args[1], "w", compression=zipfile.ZIP_DEFLATED)
+  output_zip = zipfile.ZipFile(args[1], "w", compression=zipfile.ZIP_DEFLATED, allowZip64=True)
   CopyInfo(output_zip)
 
   try:
@@ -88,11 +88,13 @@ def main(argv):
       # and all we have to do is copy them to the output zip.
       images = os.listdir(images_path)
       if images:
-        for i in images:
-          if bootable_only and i not in ("boot.img", "recovery.img"): continue
-          if not i.endswith(".img"): continue
-          with open(os.path.join(images_path, i), "r") as f:
-            common.ZipWriteStr(output_zip, i, f.read())
+        for image in images:
+          if bootable_only and image not in ("boot.img", "recovery.img"):
+            continue
+          if not image.endswith(".img"):
+            continue
+          common.ZipWrite(
+              output_zip, os.path.join(images_path, image), image)
         done = True
 
     if not done:

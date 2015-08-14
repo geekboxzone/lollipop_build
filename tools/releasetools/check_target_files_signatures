@@ -183,7 +183,7 @@ class APK(object):
     out = set()
     try:
       f = open(full_filename)
-      apk = zipfile.ZipFile(f, "r")
+      apk = zipfile.ZipFile(f, "r", allowZip64=True)
       pkcs7 = None
       for info in apk.infolist():
         if info.filename.startswith("META-INF/") and \

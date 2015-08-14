@@ -381,7 +381,7 @@ def ReplaceOtaKeys(input_tf_zip, output_tf_zip, misc_info):
   # We DO NOT include the extra_recovery_keys (if any) here.
 
   tempfile = cStringIO.StringIO()
-  certs_zip = zipfile.ZipFile(tempfile, "w")
+  certs_zip = zipfile.ZipFile(tempfile, "w", allowZip64=True)
   for k in mapped_keys:
     certs_zip.write(k)
   certs_zip.close()
@@ -471,8 +471,8 @@ def main(argv):
     common.Usage(__doc__)
     sys.exit(1)
 
-  input_zip = zipfile.ZipFile(args[0], "r")
-  output_zip = zipfile.ZipFile(args[1], "w")
+  input_zip = zipfile.ZipFile(args[0], "r", allowZip64=True)
+  output_zip = zipfile.ZipFile(args[1], "w", allowZip64=True)
 
   misc_info = common.LoadInfoDict(input_zip)
 

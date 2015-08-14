@@ -651,10 +651,8 @@ endif;
   WriteMetadata(metadata, output_zip)
 
 
-def WritePolicyConfig(file_context, output_zip):
-  f = open(file_context, 'r');
-  basename = os.path.basename(file_context)
-  common.ZipWriteStr(output_zip, basename, f.read())
+def WritePolicyConfig(file_name, output_zip):
+  common.ZipWrite(output_zip, file_name, os.path.basename(file_name))
 
 
 def WriteMetadata(metadata, output_zip):
@@ -1526,11 +1524,11 @@ def main(argv):
 
     if OPTIONS.no_signing:
       if os.path.exists(args[1]): os.unlink(args[1])
-      output_zip = zipfile.ZipFile(args[1], "w", compression=zipfile.ZIP_DEFLATED)
+      output_zip = zipfile.ZipFile(args[1], "w", compression=zipfile.ZIP_DEFLATED, allowZip64=True)
     else:
       temp_zip_file = tempfile.NamedTemporaryFile()
       output_zip = zipfile.ZipFile(temp_zip_file, "w",
-                                   compression=zipfile.ZIP_DEFLATED)
+                                   compression=zipfile.ZIP_DEFLATED, allowZip64=True)
 
     if OPTIONS.incremental_source is None:
       WriteFullOTAPackage(input_zip, output_zip)

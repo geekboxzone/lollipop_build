@@ -561,6 +561,7 @@ INSTALLED_LOADER_TARGET := $(strip $(wildcard $(TARGET_DEVICE_DIR)/loader/RK*Loa
 INSTALLED_NEW_LOADER_TARGET := $(PRODUCT_OUT)/RKLoader_new.bin
 INSTALLED_UBOOT_TARGET := $(strip $(wildcard u-boot/uboot.img))
 INSTALLED_CHARGE_TARGET := $(strip $(wildcard u-boot/charge.img))
+INSTALLED_TRUST_TARHET := $(strip $(wildcard u-boot/trust.img))
 # -----------------------------------------------------------------
 # the parameter image 
 INSTALLED_PARAMETER_TARGET := $(strip $(wildcard $(TARGET_DEVICE_DIR)/parameter/parameter*))
@@ -1496,6 +1497,12 @@ ifeq ($(INSTALLED_UBOOT_TARGET),)
 	$(info No uboot for uboot/uboot.img to otapackage)
 else
 	$(hide) cp $(INSTALLED_UBOOT_TARGET) $(zip_root)/uboot.img
+endif
+
+ifeq ($(INSTALLED_TRUST_TARHET),)
+	$(info No trust for uboot/trust.img to otapackage)
+else
+	$(hide) cp $(INSTALLED_TRUST_TARHET) $(zip_root)/trust.img
 endif
 
 ifeq ($(INSTALLED_CHARGE_TARGET),)

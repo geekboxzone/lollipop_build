@@ -15,7 +15,9 @@ endif
 DEX2OAT_DEPENDENCY := art/runtime/oat.cc # dependency on oat version number
 DEX2OAT_DEPENDENCY += art/runtime/image.cc # dependency on image version number
 DEX2OAT_DEPENDENCY += |
+ifeq ($(ART_BUILD_HOST_NDEBUG), true)
 DEX2OAT_DEPENDENCY += $(DEX2OAT)
+endif
 
 DEX2OATD_DEPENDENCY := $(DEX2OAT_DEPENDENCY)
 ifneq ($(ART_BUILD_HOST_NDEBUG), true)

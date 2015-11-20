@@ -66,6 +66,7 @@ PRODUCT_PACKAGES += \
     libnetutils \
     libpdfium \
     libreference-ril \
+    libril-rk29-dataonly \
     libreverbwrapper \
     libril \
     librtp_jni \
@@ -114,6 +115,11 @@ PRODUCT_PACKAGES += \
     vold \
     wm
 
+
+ifeq ($(strip $(ENABLE_DONGLE)),true)
+PRODUCT_PACKAGES += \
+    libril-rk29-dataonly
+endif
 
 PRODUCT_COPY_FILES := $(call add-to-product-copy-files-if-exists,\
     frameworks/base/preloaded-classes:system/etc/preloaded-classes)
